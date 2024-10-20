@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stock_control
+    username: postgres
+    password: mich2021$
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update  # O "create", "validate", etc. según necesites.
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true # Para ver las consultas SQL en la consola.
+    open-in-view: false # Se recomienda desactivar esta opción en producción.
+
+  # Opcionalmente puedes configurar el pool de conexiones HikariCP
+  datasource.hikari:
+    maximum-pool-size: 10 # Ajusta según tus necesidades.
+    minimum-idle: 5
+    idle-timeout: 30000
+    max-lifetime: 1800000
+    connection-timeout: 20000
