@@ -13,16 +13,20 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductUploadServiceImpl implements ProductUploadService {
+    private final ProductService productService;
 
     @Autowired
-    private ProductService productService;
-
+    public ProductUploadServiceImpl(ProductService productService) {
+        this.productService = productService;
+    }
+    
     @Override
     public List<Product> uploadProducts(MultipartFile file) throws Exception {
-        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
+        if (file.isEmpty() || !Objects.requireNonNull(file.getOriginalFilename()).endsWith(".csv")) {
             throw new Exception("The file is empty or not a CSV file.");
         }
         List<Product> products = new ArrayList<>();
@@ -41,9 +45,7 @@ public class ProductUploadServiceImpl implements ProductUploadService {
                 product.setDescription(data[1].trim());
                 product.setPrice(new BigDecimal(data[2].trim()));
                 product.setQuantity(Integer.parseInt(data[3].trim()));
-                product.setCategoryId(Long.parseLong(data[4].trim()));
-                // Si tienes un supplier_id, añade la línea correspondiente aquí
-
+//                product.setCategoryId(Long.parseLong(data[4].trim()));
                 products.add(product);
             }
         } catch (IOException e) {

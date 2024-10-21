@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
 @Table(name = "suppliers")
 @Data
@@ -20,4 +22,6 @@ public class Supplier {
     private Long supplierId;
     private String supplierName;
     private String contactInfo;
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    private List<Product> products;
 }

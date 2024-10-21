@@ -20,16 +20,17 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
-
     private String productName;
     private String description;
     private BigDecimal price;
     private int quantity;
-    private Long categoryId;
-    private Long supplierId;
-
-    @Column(updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)  // Many products to one category
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;  // This will be the full Category object
+    @ManyToOne(fetch = FetchType.LAZY)  // Many products to one category
+    @JoinColumn(name = "supplier_id", nullable = false)
+    private Supplier supplier;
+    @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 }

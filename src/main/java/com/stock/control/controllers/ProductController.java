@@ -16,11 +16,14 @@ import java.util.Optional;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+    private final ProductUploadService productUploadService;
 
     @Autowired
-    private ProductUploadService productUploadService;
+    public ProductController(ProductService productService, ProductUploadService productUploadService) {
+        this.productService = productService;
+        this.productUploadService = productUploadService;
+    }
 
     @GetMapping
     public List<Product> getAllProducts() {
@@ -39,8 +42,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        product.setProductId(id);
-        return productService.save(product);
+        return productService.update(id,product).get();
     }
 
     @DeleteMapping("/{id}")
