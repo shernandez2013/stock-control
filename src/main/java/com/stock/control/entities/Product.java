@@ -24,10 +24,10 @@ public class Product {
     private String description;
     private BigDecimal price;
     private int quantity;
-    @ManyToOne(fetch = FetchType.LAZY)  // Many products to one category
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;  // This will be the full Category object
-    @ManyToOne(fetch = FetchType.LAZY)  // Many products to one category
+    private Category category;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
     @Column(updatable = false, nullable = false)

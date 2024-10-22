@@ -23,7 +23,7 @@ public class ProductUploadServiceImpl implements ProductUploadService {
     public ProductUploadServiceImpl(ProductService productService) {
         this.productService = productService;
     }
-    
+
     @Override
     public List<Product> uploadProducts(MultipartFile file) throws Exception {
         if (file.isEmpty() || !Objects.requireNonNull(file.getOriginalFilename()).endsWith(".csv")) {

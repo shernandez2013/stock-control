@@ -12,8 +12,13 @@ import java.util.Optional;
 @Service
 public class StockAlertServiceImpl implements StockAlertService {
 
+
+    private final StockAlertRepository stockAlertRepository;
+
     @Autowired
-    private StockAlertRepository stockAlertRepository;
+    public StockAlertServiceImpl(StockAlertRepository stockAlertRepository) {
+        this.stockAlertRepository = stockAlertRepository;
+    }
 
     @Override
     public List<StockAlert> findAll() {

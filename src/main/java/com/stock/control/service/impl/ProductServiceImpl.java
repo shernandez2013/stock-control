@@ -49,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public Optional<Product> update(Long id, Product updatedProduct) {
+    public Product update(Long id, Product updatedProduct) {
         Optional<Product> existingProductOpt = productRepository.findById(id);
         if (existingProductOpt.isEmpty()) {
             throw new IllegalArgumentException("Invalid product id " + id);
@@ -63,14 +63,14 @@ public class ProductServiceImpl implements ProductService {
             throw new IllegalArgumentException("Invalid supplier.");
         }
 
-            existingProduct.setProductName(updatedProduct.getProductName());
-            existingProduct.setDescription(updatedProduct.getDescription());
-            existingProduct.setPrice(updatedProduct.getPrice());
-            existingProduct.setQuantity(updatedProduct.getQuantity());
-            existingProduct.setCategory(updatedProduct.getCategory());
-            existingProduct.setSupplier(updatedProduct.getSupplier());
-            existingProduct.setUpdatedAt(LocalDateTime.now());
-            return Optional.of(productRepository.save(existingProduct));
+        existingProduct.setProductName(updatedProduct.getProductName());
+        existingProduct.setDescription(updatedProduct.getDescription());
+        existingProduct.setPrice(updatedProduct.getPrice());
+        existingProduct.setQuantity(updatedProduct.getQuantity());
+        existingProduct.setCategory(updatedProduct.getCategory());
+        existingProduct.setSupplier(updatedProduct.getSupplier());
+        existingProduct.setUpdatedAt(LocalDateTime.now());
+        return productRepository.save(existingProduct);
 
     }
 
@@ -80,13 +80,13 @@ public class ProductServiceImpl implements ProductService {
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-           Optional<Category> category = categoryRepository.findById(product.get().getCategory().getCategoryId());
-           if (category.isPresent()) {
-               productRepository.deleteById(id);
-           }else{
-               throw new IllegalArgumentException("Invalid category");
-           }
-        }else{
+            Optional<Category> category = categoryRepository.findById(product.get().getCategory().getCategoryId());
+            if (category.isPresent()) {
+                productRepository.deleteById(id);
+            } else {
+                throw new IllegalArgumentException("Invalid category");
+            }
+        } else {
             throw new IllegalArgumentException("Invalid product");
         }
     }
@@ -94,6 +94,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void saveAll(List<Product> products) {
-         productRepository.saveAll(products);
+        productRepository.saveAll(products);
     }
 }

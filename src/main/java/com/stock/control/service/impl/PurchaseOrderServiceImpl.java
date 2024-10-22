@@ -11,9 +11,12 @@ import java.util.Optional;
 
 @Service
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
+    private final PurchaseOrderRepository purchaseOrderRepository;
 
     @Autowired
-    private PurchaseOrderRepository purchaseOrderRepository;
+    public PurchaseOrderServiceImpl(PurchaseOrderRepository purchaseOrderRepository) {
+        this.purchaseOrderRepository = purchaseOrderRepository;
+    }
 
     @Override
     public List<PurchaseOrder> findAll() {

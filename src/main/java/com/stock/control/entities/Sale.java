@@ -16,15 +16,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class Sale {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long saleId;
-
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
     private int quantitySold;
     private BigDecimal total;
     @Column(updatable = false)

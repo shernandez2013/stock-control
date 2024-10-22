@@ -15,17 +15,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class StockAlert {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long alertId;
-
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
     private int thresholdQuantity;
-
     @Column(updatable = false)
     private LocalDateTime alertDate;
 }
