@@ -1,8 +1,10 @@
 package com.stock.control.controllers;
 
 import com.stock.control.entities.Product;
+import com.stock.control.exception.NotFoundException;
 import com.stock.control.service.ProductService;
 import com.stock.control.service.ProductUploadService;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/products")
@@ -31,7 +33,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Product> getProductById(@PathVariable Long id) {
+    public Product getProductById(@PathVariable Long id) {
         return productService.findById(id);
     }
 
@@ -51,13 +53,11 @@ public class ProductController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadProducts(@RequestParam("file") MultipartFile file) {
-        try {
-            List<Product> products = productUploadService.uploadProducts(file);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Products loaded successfully: " + products.size());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<String> uploadProducts(@RequestParam("file") MultipartFile file) throws Exception {
+        if (file.isEmpty() || !Objects.equals(file.getContentType(), "text/csv")) {
+            throw new BadRequestException("The file must be a CSV file and cannot be empty.");
         }
-
+        List<Product> products = productUploadService.uploadProducts(file);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Products loaded successfully: " + products.size());
     }
 }

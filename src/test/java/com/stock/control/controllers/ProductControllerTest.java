@@ -4,6 +4,7 @@ package com.stock.control.controllers;
 import com.stock.control.entities.Product;
 import com.stock.control.service.ProductService;
 import com.stock.control.service.ProductUploadService;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,11 +17,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
-import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 class ProductControllerTest {
 
@@ -58,7 +60,7 @@ class ProductControllerTest {
     @Test
     void testGetProductById() throws Exception {
         Product product = TestData.getProduct(1L, "Product 1", "200");
-        when(productService.findById(1L)).thenReturn(Optional.of(product));
+        when(productService.findById(1L)).thenReturn(product);
         mockMvc.perform(get("/api/products/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(1L))
@@ -120,17 +122,18 @@ class ProductControllerTest {
     }
 
     @Test
-    void testUploadProductsBadRequest() throws Exception {
-        MockMultipartFile mockFile = new MockMultipartFile(
-                "file", "products.csv", "text/csv", "product data".getBytes());
-        when(productUploadService.uploadProducts(any(MultipartFile.class)))
-                .thenThrow(new RuntimeException("File format not supported"));
-        mockMvc.perform(multipart("/api/products/upload")
-                        .file(mockFile)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("File format not supported"));
+    void testUploadProductsBadRequest() {
+        MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "Some data".getBytes());
+        assertThrows(BadRequestException.class, () -> {
+            productController.uploadProducts(file);
+        });
     }
 
-
+    @Test
+    void testUploadProducts_EmptyFile() {
+        MultipartFile file = new MockMultipartFile("file", "", "text/csv", new byte[0]);
+        assertThrows(BadRequestException.class, () -> {
+            productController.uploadProducts(file);
+        });
+    }
 }
