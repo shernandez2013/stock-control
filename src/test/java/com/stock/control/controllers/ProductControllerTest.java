@@ -124,16 +124,12 @@ class ProductControllerTest {
     @Test
     void testUploadProductsBadRequest() {
         MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "Some data".getBytes());
-        assertThrows(BadRequestException.class, () -> {
-            productController.uploadProducts(file);
-        });
+        assertThrows(BadRequestException.class, () -> productController.uploadProducts(file));
     }
 
     @Test
     void testUploadProducts_EmptyFile() {
         MultipartFile file = new MockMultipartFile("file", "", "text/csv", new byte[0]);
-        assertThrows(BadRequestException.class, () -> {
-            productController.uploadProducts(file);
-        });
+        assertThrows(BadRequestException.class, () -> productController.uploadProducts(file));
     }
 }
