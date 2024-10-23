@@ -1,7 +1,6 @@
 package com.stock.control.controllers;
 
 import com.stock.control.entities.Product;
-import com.stock.control.exception.NotFoundException;
 import com.stock.control.service.ProductService;
 import com.stock.control.service.ProductUploadService;
 import org.apache.coyote.BadRequestException;
