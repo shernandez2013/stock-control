@@ -2,7 +2,6 @@ package com.stock.control.controllers;
 
 import com.stock.control.entities.Sale;
 import com.stock.control.service.SaleService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +22,8 @@ public class SaleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Sale> getSaleById(@PathVariable Long id) {
-        return saleService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Sale getSaleById(@PathVariable Long id) {
+        return saleService.findById(id);
     }
 
     @PostMapping
@@ -35,12 +32,9 @@ public class SaleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Sale> updateSupplier(@PathVariable Long id, @RequestBody Sale sale) {
-        return saleService.update(id, sale)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Sale updateSupplier(@PathVariable Long id, @RequestBody Sale sale) {
+        return saleService.update(id, sale);
     }
-
 
     @DeleteMapping("/{id}")
     public void deleteSale(@PathVariable Long id) {

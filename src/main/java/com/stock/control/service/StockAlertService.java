@@ -8,11 +8,11 @@ import java.util.Optional;
 public interface StockAlertService {
     List<StockAlert> findAll();
 
-    Optional<StockAlert> findById(Long id);
+    StockAlert findById(Long id);
 
     StockAlert save(StockAlert product);
 
-    Optional<StockAlert> update(Long id, StockAlert supplier);
+    StockAlert update(Long id, StockAlert supplier);
 
     void deleteById(Long id);
 }

@@ -2,7 +2,6 @@ package com.stock.control.controllers;
 
 import com.stock.control.entities.PurchaseOrder;
 import com.stock.control.service.PurchaseOrderService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +22,8 @@ public class PurchaseOrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PurchaseOrder> getPurchaseOrderById(@PathVariable Long id) {
-        return purchaseOrderService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public PurchaseOrder getPurchaseOrderById(@PathVariable Long id) {
+        return purchaseOrderService.findById(id);
     }
 
     @PostMapping
@@ -35,10 +32,8 @@ public class PurchaseOrderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PurchaseOrder> updateSupplier(@PathVariable Long id, @RequestBody PurchaseOrder purchaseOrder) {
-        return purchaseOrderService.update(id, purchaseOrder)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public PurchaseOrder updateSupplier(@PathVariable Long id, @RequestBody PurchaseOrder purchaseOrder) {
+        return purchaseOrderService.update(id, purchaseOrder);
     }
 
     @DeleteMapping("/{id}")

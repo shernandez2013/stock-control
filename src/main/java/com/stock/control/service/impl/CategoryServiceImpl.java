@@ -1,15 +1,20 @@
 package com.stock.control.service.impl;
 
 import com.stock.control.entities.Category;
+import com.stock.control.exception.NotFoundException;
+import com.stock.control.exception.ProcessingException;
 import com.stock.control.repositories.CategoryRepository;
 import com.stock.control.service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
@@ -20,34 +25,54 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> findAll() {
-        return categoryRepository.findAll();
+        try {
+            return categoryRepository.findAll();
+        } catch (DataAccessException e) {
+            log.error("Error while fetching all categories", e);
+            throw new ProcessingException("An error occurred while fetching categories from the database", e);
+        }
     }
 
     @Override
-    public Optional<Category> findById(Long id) {
-        return categoryRepository.findById(id);
+    public Category findById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("categories not found with id: " + id));
     }
 
     @Override
+    @Transactional
     public Category save(Category category) {
+        if (category == null) {
+            throw new IllegalArgumentException("Category information is missing");
+        }
+        if (categoryRepository.existsById(category.getCategoryId())) {
+            throw new IllegalArgumentException("Category already exist: " + category.getCategoryId());
+        }
         return categoryRepository.save(category);
     }
 
     @Override
-    public Optional<Category> update(Long id, Category updatedCategory) {
-        return categoryRepository.findById(id).map(existingProduct -> {
-            existingProduct.setCategoryName(updatedCategory.getCategoryName());
-            existingProduct.setDescription(updatedCategory.getDescription());
-            return categoryRepository.save(existingProduct);
-        });
+    @Transactional
+    public Category update(Long id, Category updatedCategory) {
+        if (updatedCategory == null || updatedCategory.getCategoryId() == null) {
+            throw new IllegalArgumentException("Category information is missing");
+        }
+        Category existingCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category with id " + id + " not found"));
+
+        existingCategory.setCategoryName(updatedCategory.getCategoryName());
+        existingCategory.setDescription(updatedCategory.getDescription());
+        return categoryRepository.save(existingCategory);
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        if (categoryRepository.existsById(id)) {
-            categoryRepository.deleteById(id);
-        } else {
-            throw new IllegalArgumentException("Category id = " + id + " not found.");
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category with id " + id + " not found"));
+        if (!categoryRepository.existsById(category.getCategoryId())) {
+            throw new NotFoundException("Category not found " + category.getCategoryId());
         }
+        categoryRepository.deleteById(id);
     }
 }

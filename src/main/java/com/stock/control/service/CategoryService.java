@@ -8,11 +8,11 @@ import java.util.Optional;
 public interface CategoryService {
     List<Category> findAll();
 
-    Optional<Category> findById(Long id);
+    Category findById(Long id);
 
     Category save(Category category);
 
-    Optional<Category> update(Long id, Category category);
+    Category update(Long id, Category category);
 
     void deleteById(Long id);
 }

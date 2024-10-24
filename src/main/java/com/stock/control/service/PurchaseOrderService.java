@@ -9,11 +9,11 @@ public interface PurchaseOrderService {
 
     List<PurchaseOrder> findAll();
 
-    Optional<PurchaseOrder> findById(Long id);
+    PurchaseOrder findById(Long id);
 
     PurchaseOrder save(PurchaseOrder product);
 
-    Optional<PurchaseOrder> update(Long id, PurchaseOrder product);
+    PurchaseOrder update(Long id, PurchaseOrder product);
 
     void deleteById(Long id);
 }

@@ -2,7 +2,6 @@ package com.stock.control.controllers;
 
 import com.stock.control.entities.Supplier;
 import com.stock.control.service.SupplierService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +22,8 @@ public class SupplierController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Supplier> getSupplierById(@PathVariable Long id) {
-        return supplierService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Supplier getSupplierById(@PathVariable Long id) {
+        return supplierService.findById(id);
     }
 
     @PostMapping
@@ -35,10 +32,8 @@ public class SupplierController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Supplier> updateSupplier(@PathVariable Long id, @RequestBody Supplier supplier) {
-        return supplierService.update(id, supplier)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Supplier updateSupplier(@PathVariable Long id, @RequestBody Supplier supplier) {
+        return supplierService.update(id, supplier);
     }
 
     @DeleteMapping("/{id}")
