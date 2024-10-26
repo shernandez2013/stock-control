@@ -14,7 +14,13 @@ import java.util.List;
 @Component
 public class ControlAuthenticationFilter extends OncePerRequestFilter {
 
-    private final List<String> excludedPaths = List.of("/public", "/login", "/home");
+    private final List<String> excludedPaths = List.of(
+            "/public",
+            "/login",
+            "/home",
+            "/swagger-ui",         // Swagger UI
+            "/v3/api-docs"
+    );
 
     private final TokenService tokenService;
 

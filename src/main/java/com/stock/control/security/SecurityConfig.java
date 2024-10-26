@@ -22,11 +22,14 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/products").authenticated()
-                .anyRequest().permitAll())
-
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers("/api/products").authenticated()
+                        .anyRequest().permitAll())
                 .addFilterBefore(controlAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

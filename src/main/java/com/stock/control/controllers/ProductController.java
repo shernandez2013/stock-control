@@ -3,6 +3,10 @@ package com.stock.control.controllers;
 import com.stock.control.entities.Product;
 import com.stock.control.service.ProductService;
 import com.stock.control.service.ProductUploadService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/products")
+@Tag(name = "Products", description = "Operations related to products")
 public class ProductController {
 
     private final ProductService productService;
@@ -26,13 +31,30 @@ public class ProductController {
         this.productUploadService = productUploadService;
     }
 
+    @Operation(
+            summary = "Get all products",
+            description = "Returns a list of all available products.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of products returned successfully"),
+                    @ApiResponse(responseCode = "404", description = "No products found")
+            }
+    )
+
     @GetMapping
     public List<Product> getAllProducts() {
         return productService.findAll();
     }
 
+    @Operation(
+            summary = "Get product by id",
+            description = "Returns an available product by id.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "A product returned successfully"),
+                    @ApiResponse(responseCode = "404", description = "No product found")
+            }
+    )
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
+    public Product getProductById(@Parameter(description = "Product Id")@PathVariable Long id) {
         return productService.findById(id);
     }
 
