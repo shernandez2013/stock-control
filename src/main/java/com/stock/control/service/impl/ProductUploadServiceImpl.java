@@ -1,6 +1,6 @@
 package com.stock.control.service.impl;
 
-import com.stock.control.entities.Product;
+import com.stock.control.model.request.ProductRequest;
 import com.stock.control.service.ProductService;
 import com.stock.control.service.ProductUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,35 +25,36 @@ public class ProductUploadServiceImpl implements ProductUploadService {
     }
 
     @Override
-    public List<Product> uploadProducts(MultipartFile file) throws Exception {
+    public List<ProductRequest> uploadProducts(MultipartFile file) throws Exception {
         if (file.isEmpty() || !Objects.requireNonNull(file.getOriginalFilename()).endsWith(".csv")) {
             throw new Exception("The file is empty or not a CSV file.");
         }
-        List<Product> products = new ArrayList<>();
+        List<ProductRequest> productRequests = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
             if ((line = reader.readLine()) != null) {
-                // Esto puede ser usado para leer encabezados si es necesario
+                // To remove headers if necessary
             }
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length < 5) {
                     continue;
                 }
-                Product product = new Product();
-                product.setProductName(data[0].trim());
-                product.setDescription(data[1].trim());
-                product.setPrice(new BigDecimal(data[2].trim()));
-                product.setQuantity(Integer.parseInt(data[3].trim()));
-//                product.setCategoryId(Long.parseLong(data[4].trim()));
-                products.add(product);
+                ProductRequest productRequest = new ProductRequest();
+                productRequest.setProductName(data[0].trim());
+                productRequest.setDescription(data[1].trim());
+                productRequest.setPrice(new BigDecimal(data[2].trim()));
+                productRequest.setQuantity(Integer.parseInt(data[3].trim()));
+//                productRequest.setCategoryId(Long.parseLong(data[4].trim()));
+//                productRequest.setSupplierId(Long.parseLong(data[4].trim()));
+                productRequests.add(productRequest);
             }
         } catch (IOException e) {
             throw new Exception("Error processing the file.", e);
         } catch (NumberFormatException e) {
             throw new Exception("Error in the number format in the file..", e);
         }
-        productService.saveAll(products);
-        return products;
+        productService.saveAll(productRequests);
+        return productRequests;
     }
 }

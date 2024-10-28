@@ -1,7 +1,10 @@
 package com.stock.control.controllers;
 
 
-import com.stock.control.entities.Product;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.stock.control.model.request.ProductRequest;
+import com.stock.control.model.response.ProductResponse;
 import com.stock.control.service.ProductService;
 import com.stock.control.service.ProductUploadService;
 import org.apache.coyote.BadRequestException;
@@ -37,16 +40,19 @@ class ProductControllerTest {
     @InjectMocks
     private ProductController productController;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeEach
     void setUp() {
+        objectMapper.registerModule(new JavaTimeModule());
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(productController).build();
     }
 
     @Test
     void testGetAllProducts() throws Exception {
-        Product product1 = TestData.getProduct(1L, "Product 1", "100");
-        Product product2 = TestData.getProduct(2L, "Product 2", "200");
+        ProductResponse product1 = TestData.getProductResponse(1L, "Product 1", "100");
+        ProductResponse product2 = TestData.getProductResponse(2L, "Product 2", "200");
         when(productService.findAll()).thenReturn(Arrays.asList(product1, product2));
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
@@ -59,7 +65,7 @@ class ProductControllerTest {
 
     @Test
     void testGetProductById() throws Exception {
-        Product product = TestData.getProduct(1L, "Product 1", "200");
+        ProductResponse product = TestData.getProductResponse(1L, "Product 1", "200");
         when(productService.findById(1L)).thenReturn(product);
         mockMvc.perform(get("/api/products/1"))
                 .andExpect(status().isOk())
@@ -70,29 +76,33 @@ class ProductControllerTest {
 
     @Test
     void testCreateProduct() throws Exception {
-        Product product = TestData.getProduct(1L, "Product 1", "100");
-        when(productService.save(any(Product.class))).thenReturn(product);
+        ProductRequest productRequest = TestData.getProductRequest(1L, "Product 1", "100");
+        ProductResponse productResponse = TestData.getProductResponse(1L, "Product 1", "100");
+        when(productService.save(any(ProductRequest.class))).thenReturn(productResponse);
+        String productResponseJson = objectMapper.writeValueAsString(productRequest);
+
         mockMvc.perform(post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Product 1\",\"price\":100.0}"))
+                        .content(productResponseJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.productName").value("Product 1"));
-        verify(productService, times(1)).save(any(Product.class));
+        verify(productService, times(1)).save(any(ProductRequest.class));
     }
 
     @Test
     void testUpdateProduct() throws Exception {
-        Product updatedProduct = TestData.getProduct(1L, "Updated Product", "120");
-        when(productService.update(eq(1L), any(Product.class))).thenReturn(updatedProduct);
+        ProductResponse productResponse = TestData.getProductResponse(1L, "Updated Product", "100");
+        when(productService.update(eq(1L), any(ProductRequest.class))).thenReturn(productResponse);
+        String productResponseJson = objectMapper.writeValueAsString(productResponse);
         mockMvc.perform(put("/api/products/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Updated Product\",\"price\":120.0}"))
+                        .content(productResponseJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.productName").value("Updated Product"))
-                .andExpect(jsonPath("$.price").value(120.0));
-        verify(productService, times(1)).update(eq(1L), any(Product.class));
+                .andExpect(jsonPath("$.price").value(100.0));
+        verify(productService, times(1)).update(eq(1L), any(ProductRequest.class));
     }
 
     @Test
@@ -112,7 +122,7 @@ class ProductControllerTest {
                 "product data".getBytes()
         );
         when(productUploadService.uploadProducts(any(MultipartFile.class)))
-                .thenReturn(Arrays.asList(new Product(), new Product()));
+                .thenReturn(Arrays.asList(new ProductRequest(), new ProductRequest()));
         mockMvc.perform(multipart("/api/products/upload")
                         .file(mockFile)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
