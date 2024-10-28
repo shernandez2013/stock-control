@@ -76,7 +76,7 @@ class ProductControllerTest {
 
     @Test
     void testCreateProduct() throws Exception {
-        ProductRequest productRequest = TestData.getProductRequest(1L, "Product 1", "100");
+        ProductRequest productRequest = TestData.getProductRequest( "Product 1", "100");
         ProductResponse productResponse = TestData.getProductResponse(1L, "Product 1", "100");
         when(productService.save(any(ProductRequest.class))).thenReturn(productResponse);
         String productResponseJson = objectMapper.writeValueAsString(productRequest);

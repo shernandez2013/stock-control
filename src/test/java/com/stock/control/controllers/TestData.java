@@ -23,7 +23,7 @@ public class TestData {
         return product;
     }
 
-    public static ProductRequest getProductRequest(Long id, String name, String price) {
+    public static ProductRequest getProductRequest(String name, String price) {
         ProductRequest product = new ProductRequest();
         product.setProductName(name);
         product.setDescription("This is a mocked product description.");

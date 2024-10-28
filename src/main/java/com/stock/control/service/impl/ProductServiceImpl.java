@@ -97,9 +97,7 @@ public class ProductServiceImpl implements ProductService {
             throw new IllegalArgumentException("The product list cannot be null or empty");
         }
         List<Product> products = new ArrayList<>();
-        productRequests.forEach(productRequest -> {
-            products.add(generateProductFromProductRequest(productRequest));
-        });
+        productRequests.forEach(productRequest -> products.add(generateProductFromProductRequest(productRequest)));
         productRepository.saveAll(products);
     }
 
