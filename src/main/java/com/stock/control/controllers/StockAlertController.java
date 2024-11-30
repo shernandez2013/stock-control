@@ -2,7 +2,6 @@ package com.stock.control.controllers;
 
 import com.stock.control.entities.StockAlert;
 import com.stock.control.service.StockAlertService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +22,8 @@ public class StockAlertController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StockAlert> getStockAlertById(@PathVariable Long id) {
-        return stockAlertService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public StockAlert getStockAlertById(@PathVariable Long id) {
+        return stockAlertService.findById(id);
     }
 
     @PostMapping
@@ -36,10 +33,8 @@ public class StockAlertController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<StockAlert> updateSupplier(@PathVariable Long id, @RequestBody StockAlert stockAlert) {
-        return stockAlertService.update(id, stockAlert)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public StockAlert updateSupplier(@PathVariable Long id, @RequestBody StockAlert stockAlert) {
+        return stockAlertService.update(id, stockAlert);
     }
 
 

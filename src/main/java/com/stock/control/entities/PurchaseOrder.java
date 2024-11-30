@@ -16,22 +16,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class PurchaseOrder {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
-
     private int quantity;
     private BigDecimal total;
-
     @Column(updatable = false)
     private LocalDateTime orderDate;
 }

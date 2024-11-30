@@ -1,20 +1,20 @@
 package com.stock.control.service;
 
-import com.stock.control.entities.Product;
+import com.stock.control.model.request.ProductRequest;
+import com.stock.control.model.response.ProductResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
-    List<Product> findAll();
+    List<ProductResponse> findAll();
 
-    Optional<Product> findById(Long id);
+    ProductResponse findById(Long id);
 
-    Product save(Product product);
+    ProductResponse save(ProductRequest product);
 
-    Optional<Product> update(Long id, Product product);
+    ProductResponse update(Long id, ProductRequest product);
 
     void deleteById(Long id);
 
-    void saveAll(List<Product> products);
+    void saveAll(List<ProductRequest> products);
 }
